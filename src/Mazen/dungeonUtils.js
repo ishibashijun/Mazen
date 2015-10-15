@@ -336,8 +336,6 @@ $.DungeonUtils = {
             var possibleCorridorDir = [];
             var dir = undef;
             
-            ArrayUtils.shuffle(direction);
-
             obj.updateMap(Terrain.CORRIDOR, corridor.id, c.x, c.y);
 
             for (var d in direction) if (this.canAdvanse(obj, c, direction[d])) possibleCorridorDir.push(direction[d]);
