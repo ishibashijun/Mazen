@@ -2,14 +2,14 @@
  * Name: Mazen
  * Description: Javascript maze dungeon generator library.
  * Copyright (c) 2015 Jun Ishibashi
- * Version: 1.0.0
+ * Version: 1.0.1
  * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */ 
 
 (function ($, undef) {
 "use strict";
 
-var version = "1.0.0";
+var version = "1.0.1";
 
 $.Obj = function () {
     this.init.apply(this, arguments);
@@ -331,6 +331,10 @@ $.Direction = {
         {x: +2, y:  0},
         {x: -2, y:  0}
     ],
+    NORTH2: {x:  0, y: -2},
+    SOUTH2: {x:  0, y: +2},
+    EAST2:  {x: +2, y:  0},
+    WEST2:  {x: -2, y:  0},
     BOX: [
         {x: -1, y: -1},
         {x:  0, y: -1},
@@ -1474,8 +1478,6 @@ $.DungeonUtils = {
             var possibleCorridorDir = [];
             var dir = undef;
             
-            ArrayUtils.shuffle(direction);
-
             obj.updateMap(Terrain.CORRIDOR, corridor.id, c.x, c.y);
 
             for (var d in direction) if (this.canAdvanse(obj, c, direction[d])) possibleCorridorDir.push(direction[d]);
