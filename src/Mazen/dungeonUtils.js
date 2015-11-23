@@ -337,7 +337,7 @@ $.DungeonUtils = {
             var dir = undef;
             
             obj.updateMap(Terrain.CORRIDOR, corridor.id, c.x, c.y);
-
+            
             for (var d in direction) if (this.canAdvanse(obj, c, direction[d])) possibleCorridorDir.push(direction[d]);
 
             if (possibleCorridorDir.length != 0) {
@@ -421,6 +421,8 @@ $.DungeonUtils = {
             var len = 0;
 
             corridor.cells.forEach(function (v, k, o) {
+                if ((v.x % 2) == 0 || (v.y % 2) == 0) return true;
+                
                 var cell = v;
                 var neighbourData = self.getNeighbourCorridors(obj, corridor, cell);
 
@@ -490,7 +492,7 @@ $.DungeonUtils = {
         for (var cc in corridorData) {
             var cCorridor = corridorData[cc].corridor;
             var cCells = corridorData[cc].cells;
-
+            
             if (!corridor.corridorGroup.isCorridorConnected(cCorridor)) {
                 var index = MathUtils.randomInt(0, cCells.length - 1);
                 var dir = cCells[index].dir;
@@ -587,10 +589,6 @@ $.DungeonUtils = {
 
                                             return true;
                                         });
-                                    }
-
-                                    if (corridor.corridorGroup != undef) {
-                                        
                                     }
 
                                     self.whereIsEntrance(room, pos);
@@ -1011,17 +1009,27 @@ $.DungeonUtils = {
                 return true;
             });
         } else {
-            obj.rooms.forEach(function (value, key, object) {
-                var room = value;
-
-                room.cells.forEach(function (v, k, o) {
-                    availableCell.push({id: room.id, data: v});
-
+            var self = this;
+            
+            if (obj.createExtraCombinedRooms) {
+                obj.roomGroups.forEach(function (value, key, object) {
+                    var rGroup = value;
+                    
+                    rGroup.rooms.forEach(function (v, k, o) {
+                        self.getAvailableRoomCellsForStair(obj, availableCell, v, rGroup.id);
+        
+                        return true;
+                    });
+                    
                     return true;
                 });
-
-                return true;
-            });
+            } else {
+                obj.rooms.forEach(function (value, key, object) {
+                    self.getAvailableRoomCellsForStair(obj, availableCell, value);
+                    
+                    return true;
+                });
+            }
         }
 
         var descending = MathUtils.randomInt(0, availableCell.length - 1);
@@ -1065,6 +1073,28 @@ $.DungeonUtils = {
 
         obj.updateMap(Terrain.DESCENDING_STAIR, descendingStair.id, descendingStair.x, descendingStair.y);
         obj.updateMap(Terrain.ASCENDING_STAIR, ascendingStair.id, ascendingStair.x, ascendingStair.y);
+    },
+    getAvailableRoomCellsForStair: function (obj, availableCell, room, roomGroupId) {
+        room.cells.forEach(function (v, k, o) {
+            var byEntrance = false;
+                
+            for (var dir in Direction.CROSS) {
+                var cell = v.clone().add(Direction.CROSS[dir]);
+                
+                if (obj.getMap(cell.x, cell.y) == Terrain.ENTRANCE) {
+                    byEntrance = true;
+                    
+                    break;
+                }
+            }
+            
+            if (!byEntrance) {
+                if (roomGroupId != undef) availableCell.push({id: roomGroupId, data: v});
+                else availableCell.push({id: room.id, data: v});
+            }
+
+            return true;
+        });
     },
     removeDeadEnd: function (obj) {
         var cKeys = obj.getCorridorKeys();
