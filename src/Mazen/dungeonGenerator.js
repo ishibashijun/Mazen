@@ -84,14 +84,12 @@ $.DungeonGenerator.prototype = {
         if (this.parameters.createExtraCombinedRooms) DungeonUtils.createExtraRoomsToCombine(this);
 
         DungeonUtils.createCorridors(this);
-
-        if (this.parameters.branchOut) DungeonUtils.connectCorridors(this);
-
+        DungeonUtils.connectCorridors(this);
         DungeonUtils.createEntrance(this);
 
         if (!DungeonUtils.checkRoomsConnectivity(this)) {
             DungeonUtils.connectRooms(this);
-
+            
             if (!DungeonUtils.checkRoomsConnectivity(this)) {
                 var curTry = currentTry != undef ? currentTry + 1 : 1;
 
