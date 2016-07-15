@@ -123,7 +123,7 @@ for (y = 0; y < height; y++) {
 
 #### Demo
 
-[DEMO](http://ishibashijun.github.io/game%20development/2015/10/16/mazen/)
+[DEMO](http://ishibashijun.github.io/game%20development/2015/10/16/mazen)
 
 #### LICENSE
 
